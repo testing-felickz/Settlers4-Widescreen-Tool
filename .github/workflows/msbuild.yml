@@ -33,6 +33,10 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
+    - name: SCS - Set up projects
+      uses: security-code-scan/security-code-scan-add-action@v1.2
+
+    
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
@@ -42,3 +46,10 @@ jobs:
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+        
+    - name: SCS - Convert sarif for uploading to GitHub
+      uses: security-code-scan/security-code-scan-results-action@v1
+        
+    - name: SCS - Upload sarif	
+      uses: github/codeql-action/upload-sarif@v3
